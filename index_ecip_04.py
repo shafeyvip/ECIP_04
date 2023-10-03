@@ -48,6 +48,7 @@ class Main(QMainWindow, FORM_CLASS):
         self.Handel_New_Device_ComboBox()
         self.Handel_New_Employee_ComboBox()
         self.Handel_Add_User_ComboBox()
+        self.Show_Branches()
 
 
     ## UI Changes in Login ## (ECIP_04)
@@ -57,6 +58,9 @@ class Main(QMainWindow, FORM_CLASS):
         self.tabWidget_7.tabBar().setVisible(False)
         self.tabWidget_8.tabBar().setVisible(False)
         self.tabWidget.setCurrentIndex(0)
+        self.tabWidget_5.setCurrentIndex(0)
+        self.tabWidget_7.setCurrentIndex(0)
+        self.tabWidget_8.setCurrentIndex(0)
 
     ## Connection between App and DB (ECIP_04)
     def Db_Connect(self):
@@ -87,7 +91,8 @@ class Main(QMainWindow, FORM_CLASS):
         self.pushButton_60.clicked.connect(self.Open_Settings_Tap)
 
         self.pushButton_26.clicked.connect(self.Add_Branch)
-        self.pushButton_49.clicked.connect(self.Add_Employee)
+        self.pushButton_49.clicked.connect(self.Add_User)
+        self.pushButton_48.clicked.connect(self.Add_Category)
 
     ## Handel Login
     def Handel_Login(self):
@@ -128,20 +133,18 @@ class Main(QMainWindow, FORM_CLASS):
     def Delete_Devices(self):
         pass
 
-    #################################
-
 
     #################################
 
     ## Add New Employee (ECIP_04)
-    def Add_Employee(self):
+    def Add_User(self):
 
-        employee_name = self.lineEdit_33.text()
-        employee_mail = self.lineEdit_41.text()
-        employee_phone = self.lineEdit_42.text()
+        user_name = self.lineEdit_33.text()
+        user_mail = self.lineEdit_41.text()
+        user_phone = self.lineEdit_42.text()
         national_id = self.lineEdit_43.text()
         priority_01 = self.lineEdit_44.text()
-        employee_branch = self.comboBox_2.currentIndex()
+        user_branch = self.comboBox_2.currentIndex()
         password = self.lineEdit_45.text()
         password2 = self.lineEdit_46.text()
 
@@ -149,9 +152,9 @@ class Main(QMainWindow, FORM_CLASS):
 
         if password == password2:
             self.cur.execute('''
-                INSERT INTO employee (name, mail, phone, date, national_id, periority, password, branch)
+                INSERT INTO user (name, mail, phone, date, national_id, priority, password, branch)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                ''', (employee_name, employee_mail, employee_phone, date, national_id, priority_01, password, employee_branch))
+                ''', (user_name, user_mail, user_phone, date, national_id, priority_01, password, user_branch))
             self.db.commit()
             self.lineEdit_33.setText('')
             self.lineEdit_41.setText('')
@@ -161,10 +164,15 @@ class Main(QMainWindow, FORM_CLASS):
             self.lineEdit_45.setText('')
             self.lineEdit_46.setText('')
 
-            self.statusBar().showMessage('تم إضافة الموظف بنجاح')
-            print('Employee Added')
+            self.statusBar().showMessage('تم إضافة المستخدم بنجاح')
+            print('User Added')
         else:
             print('Wrong Password')
+
+    #################################
+    ## Add New Employee (ECIP_04)
+    def Add_Employee(self):
+        pass
 
     ## Edit Employee
     def Edit_Employe(self):
@@ -255,6 +263,7 @@ class Main(QMainWindow, FORM_CLASS):
         print('Branch Added')
 
 
+    """
     def Add_Device_Type(self):
         type_name = self.lineEdit_87.text()
 
@@ -266,6 +275,7 @@ class Main(QMainWindow, FORM_CLASS):
         self.db.commit()
         print('Device Type Added')
 
+    """
 
     ## Add New Category
     def Add_Category(self):
@@ -297,10 +307,8 @@ class Main(QMainWindow, FORM_CLASS):
         self.cur.execute('''
             SELECT category_name FROM category
         ''')
-
         categories = self.cur.fetchall()
         #print(categories)
-
         for category in categories:
             self.comboBox.addItem(str(category[0]))
             self.comboBox_2.addItem(str(category[0]))
@@ -314,18 +322,17 @@ class Main(QMainWindow, FORM_CLASS):
             self.comboBox_22.addItem(str(category[0]))
 
 
-    def Show_Branchies(self):
+    def Show_Branches(self):
 
         self.cur.execute('''
             SELECT name From branch
         ''')
 
-        branchies = self.cur.fetchall()
+        branches = self.cur.fetchall()
 
-        for branch in branchies:
-            self.comboBox_14.addItem(branch[0])
-            self.comboBox_15.addItem(branch[0])
-            self.comboBox_26.addItem(branch[0])
+        for branch in branches:
+            self.comboBox_2.addItem(branch[0])
+            self.comboBox_11.addItem(branch[0])
 
 
     def Show_Employees(self):
